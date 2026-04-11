@@ -875,9 +875,13 @@ script:
           blue: !lambda "return id(swipe_right_color)[2]/100.0;"
           effect: ${swipe_right_effect}
       - delay: 2.4s
-      - light.turn_on:
+      - light.turn_off:
           id: leds_right
-          effect: "Cover Position"
+      - script.execute: refresh_led_default
+#      - light.turn_on:
+#          id: leds_right
+#          brightness: ${cover_brightness} 
+#          effect: "Cover Position"
 
   - id: led_on_full_touch
     mode: restart
