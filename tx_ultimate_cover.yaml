@@ -728,8 +728,12 @@ script:
   - id: refresh_led_default
     mode: restart
     then:
-      - light.turn_off:
-          id: leds_right
+      - if:
+          condition:
+            lambda: 'return id(my_cover).current_operation == COVER_OPERATION_IDLE;'
+          then:
+            - light.turn_off:
+                id: leds_right
 
       - if:
           condition:
