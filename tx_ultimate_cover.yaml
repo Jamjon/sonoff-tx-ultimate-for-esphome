@@ -10,6 +10,7 @@ substitutions:
   cover_name: "My Cover"
   cover_open_duration: 25s
   cover_close_duration: 25s
+  cover_state_delay: 2s
 
   vibra_time: 150ms
   button_on_time: 500ms
@@ -656,12 +657,7 @@ cover:
           brightness: !lambda "return id(nightlight).state?${nightlight_brightness}:${cover_brightness};"
           effect: "Cover Position"
       - script.execute: open_cover
-      - delay: ${open_duration}
-      - if:
-          condition:
-            lambda: 'return id(my_cover).current_operation == COVER_OPERATION_IDLE;'
-          then:
-            - script.execute: refresh_led_default
+      - script.execute: refresh_led_after_open
     open_duration: ${cover_open_duration}
 
     close_action:
@@ -670,12 +666,7 @@ cover:
           brightness: !lambda "return id(nightlight).state?${nightlight_brightness}:${cover_brightness};"
           effect: "Cover Position"
       - script.execute: close_cover
-      - delay: ${close_duration}
-      - if:
-          condition:
-            lambda: 'return id(my_cover).current_operation == COVER_OPERATION_IDLE;'
-          then:
-            - script.execute: refresh_led_default
+      - script.execute: refresh_led_after_close
     close_duration: ${cover_close_duration}
 
     stop_action:
@@ -698,6 +689,28 @@ script:
     then:
       - switch.turn_off: relay_1
       - switch.turn_off: relay_2
+
+  - id: refresh_led_after_open
+    mode: restart
+    then:
+      - delay: ${cover_open_duration}
+      - delay: ${cover_state_delay}
+      - if:
+          condition:
+            lambda: 'return id(my_cover).current_operation == COVER_OPERATION_IDLE;'
+          then:
+            - script.execute: refresh_led_default
+
+  - id: refresh_led_after_close
+    mode: restart
+    then:
+      - delay: ${cover_close_duration}
+      - delay: ${cover_state_delay}
+      - if:
+          condition:
+            lambda: 'return id(my_cover).current_operation == COVER_OPERATION_IDLE;'
+          then:
+            - script.execute: refresh_led_default
 
   - id: refresh_nightlight
     mode: restart
