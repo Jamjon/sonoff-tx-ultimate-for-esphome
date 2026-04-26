@@ -130,10 +130,6 @@ esphome:
           state: OFF
       - script.execute: refresh_nightlight
       - script.execute: refresh_led_default
-      - light.turn_on:
-          id: leds_right
-          brightness: !lambda "return id(nightlight).state?${nightlight_brightness}:${cover_brightness};"
-          effect: "Cover Position"
 
 esp32:
   board: esp32dev
@@ -732,6 +728,9 @@ script:
   - id: refresh_led_default
     mode: restart
     then:
+      - light.turn_off:
+          id: leds_right
+
       - if:
           condition:
             lambda: "return (id(nightlight).state || id(nightlight_active).state);"
