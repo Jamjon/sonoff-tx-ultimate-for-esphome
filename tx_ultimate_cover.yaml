@@ -544,7 +544,7 @@ media_player:
     id: media_out
     name: ${friendly_name} Player
     announcement_pipeline:
-    speaker: tx_speaker
+      speaker: tx_speaker
 
 uart:
   tx_pin: ${uart_tx_pin}
