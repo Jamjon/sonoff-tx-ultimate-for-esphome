@@ -669,6 +669,14 @@ cover:
     stop_action:
       - script.execute: stop_cover
 
+    on_operation:
+      then:
+        - if:
+            condition:
+              lambda: 'return id(my_cover).current_operation == COVER_OPERATION_IDLE;'
+            then:
+              - script.execute: refresh_led_default
+
 script:
   - id: open_cover
     mode: restart
