@@ -656,6 +656,12 @@ cover:
           brightness: !lambda "return id(nightlight).state?${nightlight_brightness}:${cover_brightness};"
           effect: "Cover Position"
       - script.execute: open_cover
+      - delay: ${open_duration}
+      - if:
+          condition:
+            lambda: 'return id(my_cover).current_operation == COVER_OPERATION_IDLE;'
+          then:
+            - script.execute: refresh_led_default
     open_duration: ${cover_open_duration}
 
     close_action:
@@ -664,18 +670,17 @@ cover:
           brightness: !lambda "return id(nightlight).state?${nightlight_brightness}:${cover_brightness};"
           effect: "Cover Position"
       - script.execute: close_cover
+      - delay: ${close_duration}
+      - if:
+          condition:
+            lambda: 'return id(my_cover).current_operation == COVER_OPERATION_IDLE;'
+          then:
+            - script.execute: refresh_led_default
     close_duration: ${cover_close_duration}
 
     stop_action:
       - script.execute: stop_cover
-
-    on_operation:
-      then:
-        - if:
-            condition:
-              lambda: 'return id(my_cover).current_operation == COVER_OPERATION_IDLE;'
-            then:
-              - script.execute: refresh_led_default
+      - script.execute: refresh_led_default
 
 script:
   - id: open_cover
